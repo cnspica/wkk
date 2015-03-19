@@ -20,10 +20,6 @@ class Path():
             self.rel = path
             self.abs = os.path.join(conf.ROOT, path)
 
-
-
-
-
 class Note():
     def __init__(self, path):
         self.path = Path(path)
@@ -54,7 +50,7 @@ class Note():
         else:
             if self.ext == '.html':
                 text = parsers.remove_html(self.content)
-            elif self.ext == '.md' or self.ext == '.markdown':
+            elif self.ext == '.md':
                 text = parsers.remove_md(self.content)
 
         if isinstance(text, str):
@@ -75,7 +71,7 @@ class Note():
     def images(self):
         if self.ext == '.html':
             return []
-        elif self.ext == '.md' or self.ext == '.markdown':
+        elif self.ext == '.md':
             return parsers.md_images(self.content)
         return []
 

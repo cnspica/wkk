@@ -5,9 +5,9 @@ setup(
     name='nomadic',
     version='0.4.0',
     description='a lightweight note management system.',
-    url='https://github.com/ftzeng/nomadic',
-    author='Francis Tseng',
-    author_email='f@frnsys.com',
+    url='https://github.com/wdxtub/wkk',
+    author='Da Wang',
+    author_email='wdxtub@qq.com',
     license='GPLv3',
 
     packages=['nomadic'],
