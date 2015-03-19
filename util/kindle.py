@@ -37,14 +37,14 @@ def process_file():
         if title and content:
             ebooks[title].append(content)
 
-    if not os.path.isdir('Notes/kindle'):
-        os.mkdir('Notes/kindle')
+    if not os.path.isdir('../Notes/kindle'):
+        os.mkdir('../Notes/kindle')
 
     for ebook in ebooks.keys():
 
         ebook = ebook.replace('/', '')
         ebook = ebook.replace('\\', '')
-        fh = codecs.open('Notes/kindle/' + ebook + '.md', 'w', 'utf-8')
+        fh = codecs.open('../Notes/kindle/' + ebook + '.md', 'w', 'utf-8')
         fh.write("#" + ebook + "\n\n")
         for content in ebooks[ebook]:
             fh.write(content + '\n\n' + '---\n\n')
