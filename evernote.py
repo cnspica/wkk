@@ -3,7 +3,7 @@
 """html2text: Turn HTML into equivalent Markdown-structured text."""
 __version__ = "3.200.3"
 
-import os, shutil
+import os, shutil, re
 
 # TODO:
 #   Support decoded entities with unifiable.
@@ -860,39 +860,64 @@ def main():
 
     # process input
     encoding = "utf-8"
-    filename = '广播体操.html'
+    dirname = ''
+    if not os.path.isdir('Notes/evernote'):
+        os.mkdir('Notes/evernote')
+    dirs = os.listdir('Import')
+    for d in dirs:
+        if os.path.isdir('Import/'+d) and d[0] != '.':
+            dirname = d
+            print d
+            if not os.path.isdir('Notes/evernote/'+dirname):
+                os.mkdir('Notes/evernote/'+dirname)
 
-    data = open(filename, 'rb').read()
-    data = data.decode(encoding)
-    filename = filename.decode(encoding)
+            dirname = dirname.decode(encoding)
+            files = os.listdir('Import/'+dirname)
+            index = 0
+            for f in files:
+                if f[0] == '.': continue
+                if os.path.isdir('Import/'+dirname+'/'+f): continue
+                print f
+                filename = f
+                data = open('Import/'+dirname+'/'+filename, 'rb').read()
+                #print data
+                data = data.decode(encoding)
+                filename_arr = filename.split('.')
 
-    filename_arr = filename.split('.')
-    replacestr = filename_arr[0]+'.resources'
-    data.replace(replacestr, '_resources')
+                if os.path.exists('Import/'+dirname+'/'+filename_arr[0]+".resources"):
+                    print 'pic!'
+                    if not os.path.isdir('Notes/evernote/'+dirname+'/_resources'):
+                        os.mkdir('Notes/evernote/'+dirname+'/_resources')
+                    #filename_arr[0] = filename_arr[0].decode(encoding)
+                    replacestr = filename_arr[0]+'.resources'
+                    #replacestrutf8 = replacestr.encode(encoding).decode(encoding)
+                    #print replacestrutf8
 
-    files = os.listdir(replacestr)
-    for f in files:
-        shutil.copyfile(replacestr + "/" + f,"_resources/" + filename_arr[0] + f)
+                    data = re.sub('\"[%\w]*\.resources/','\"_resources/'+filename_arr[0],data)
 
-    h = HTML2Text(baseurl=baseurl)
-    # handle options
-    if options.ul_style_dash: h.ul_item_mark = '-'
-    if options.em_style_asterisk:
-        h.emphasis_mark = '*'
-        h.strong_mark = '__'
+                    pics = os.listdir('Import/'+dirname+'/'+replacestr)
+                    for p in pics:
+                        shutil.copyfile('Import/'+dirname+'/'+replacestr + "/" + p,'Notes/evernote/'+dirname+'/_resources/' + filename_arr[0] + p)
 
-    h.body_width = options.body_width
-    h.list_indent = options.list_indent
-    h.ignore_emphasis = options.ignore_emphasis
-    h.ignore_links = options.ignore_links
-    h.ignore_images = options.ignore_images
-    h.google_doc = options.google_doc
-    h.hide_strikethrough = options.hide_strikethrough
-    h.escape_snob = options.escape_snob
+                h = HTML2Text(baseurl=baseurl)
+                # handle options
+                if options.ul_style_dash: h.ul_item_mark = '-'
+                if options.em_style_asterisk:
+                    h.emphasis_mark = '*'
+                    h.strong_mark = '__'
 
-    # wrapwrite(h.handle(data))
-    f =codecs.open('test.md',"w","utf-8")
-    f.write(h.handle(data))
+                h.body_width = options.body_width
+                h.list_indent = options.list_indent
+                h.ignore_emphasis = options.ignore_emphasis
+                h.ignore_links = options.ignore_links
+                h.ignore_images = options.ignore_images
+                h.google_doc = options.google_doc
+                h.hide_strikethrough = options.hide_strikethrough
+                h.escape_snob = options.escape_snob
+
+                # wrapwrite(h.handle(data))
+                f =codecs.open('Notes/evernote/'+dirname+'/'+filename_arr[0]+'.md',"w","utf-8")
+                f.write(h.handle(data))
 
 
 if __name__ == "__main__":
