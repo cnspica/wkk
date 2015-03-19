@@ -54,7 +54,7 @@ class Note():
         else:
             if self.ext == '.html':
                 text = parsers.remove_html(self.content)
-            elif self.ext == '.md':
+            elif self.ext == '.md' or self.ext == '.markdown':
                 text = parsers.remove_md(self.content)
 
         if isinstance(text, str):
@@ -75,7 +75,7 @@ class Note():
     def images(self):
         if self.ext == '.html':
             return []
-        elif self.ext == '.md':
+        elif self.ext == '.md' or self.ext == '.markdown':
             return parsers.md_images(self.content)
         return []
 
