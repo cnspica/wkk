@@ -17,6 +17,7 @@ It can be regarded as an application that combines Evernote, RSS, Wikipedia toge
 <!-- MarkdownTOC -->
 
 - jarvis
+    - natural language processing
 - nomadic
     - Features
     - Setup
@@ -43,7 +44,9 @@ It can be regarded as an application that combines Evernote, RSS, Wikipedia toge
 
 ## jarvis
 
-under construction
+### natural language processing
+
+
 
 
 
