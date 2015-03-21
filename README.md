@@ -16,41 +16,141 @@ It can be regarded as an application that combines Evernote, RSS, Wikipedia toge
 
 <!-- MarkdownTOC -->
 
-- jarvis
-    - natural language processing
-- nomadic
-    - Features
-    - Setup
-        - Installation
-        - Configuration
-        - The Daemon
-        - Custom CSS
-    - Usage
-        - Browsing notes
-        - Searching notes
-        - Adding other files (images, etc)
-        - Presentations(TODO)
-        - Tips
-    - Development
-    - Screenshots
-- util
-    - Kindle Clippings Import
-    - Evernote Import
+- JARVIS
+  - Natural language processing
+    - Tokenization
+    - Tag Extraction
+    - Stats Analysis
+  - Recommendation system
+    - Similar Notes
+    - Related Books
+  - Information retrieval
+- NOMADIC
+  - Features
+  - Setup
+    - Installation
+    - Configuration
+    - The Daemon
+    - Custom CSS
+  - Usage
+    - Browsing notes
+    - Searching notes
+    - Adding other files (images, etc)
+    - Presentations(TODO)
+    - Tips
+  - Development
+  - Screenshots
+- UTIL
+  - Kindle Clippings Import
+  - Evernote Import
 - Acknowledgements
 
 <!-- /MarkdownTOC -->
 
 
 
-## jarvis
+## JARVIS
 
-### natural language processing
+Most of the features for jarvis are still quickly evolving, so at this point `jarvis` is separate from `nomadic` and `util`. When everything is working well for some time, I'll merge them together to be a complete product.
+
+Also, as `nomadic` is the most available part of `WKK`, I only use a small set of notes in `nomadic` to test `jarvis's` algorithms.
+
+### Natural language processing
+
+> NLTK is a leading platform for building Python programs to work with human language data. It provides easy-to-use interfaces to over 50 corpora and lexical resources such as WordNet, along with a suite of text processing libraries for classification, tokenization, stemming, tagging, parsing, and semantic reasoning
+
+However, NLTK doesn't support Chinese and most of its advanced techniques such as classification, tokenization, stemming, tagging, parsing and semantic reasoning are only for English. But NLTK provides lots of useful functions, so some extra work is needed to handle Chinese in NLTK.
+
+There are some toolkit for Chinese text processing such as [SnowNLP](https://github.com/isnowfy/snownlp) and [jieba](https://github.com/fxsjy/jieba). They can get good result in tokenization and tag extractions(Base on [TextRank](http://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf)). Considered on accuracy and speed, I choose `jieba` for `WKK`.
+
+#### Tokenization
+
+As there's no space between words in Chinese, I need to do some preprocessing in order to get the standard input for NLTK.
+
+Origin: 一页页的阅读，一次次的记录，一本本的书籍，一个个的本子，一条条的新闻，一天天的忘记。这个春节，我花了大量的时间来调研构思设计一个真正能“用”起来的知识管理系统。终于，在假期的最后一天，可以把小小的成果跟大家分享。受《把你的英语用起来》的启发，我想这次，是时候把你的笔记用起来了。
+
+After tokenized: 一页 页 的 阅读 ， 一次次 的 记录 ， 一本 本 的 书籍 ， 一个个 的 本子 ， 一条条 的 新闻 ， 一天天 的 忘记 。 这个 春节 ， 我花 了 大量 的 时间 来 调研 构思 设计 一个 真正 能 “ 用 ” 起来 的 知识 管理系统 。 终于 ， 在 假期 的 最后 一天 ， 可以 把 小小的 成果 跟 大家 分享 。 受 《 把 你 的 英语 用 起来 》 的 启发 ， 我 想 这次 ， 是 时候 把 你 的 笔记 用 起来 了 。
+
+#### Tag Extraction
+
+For the text mentioned above, now my code will give the following tags:
+
+    tags tf/idf score
+    -----
+    我花 0.291579695193
+    起来 0.289854179016
+    管理系统 0.22395558001
+    本子 0.220698716782
+    一条条 0.219764110335
+
+As the sample is so short in length, the auto-generated tags are not that accurate, because it is using the pre-trained common language material. I'll further train the model with personal data to make it more accurate.
+
+#### Stats Analysis
+
+This function is still in the basic step. It took me some time to make NLTK process Chinese characters.
+
+Here is the stats analysis functions supported by now:
+
+Lexical Despersion
+
+![lexical](./screenshots/lexical.jpg)
+
+Frequency Distribution
+
+![freqdist](./screenshots/freqdist.jpg)
+
++ Hapaxes (words that only occur once)
++ Collocations (ngram)
++ Similar words
+
+### Recommendation system
+
+Now Jarvis has two kinds of recommending options, they are both implemented in a basic manner, but I'll continue improving it with more complex and smart method to get more accurate result:
+
+1. Given a note, find `n` most similar notes from `nomadic`
+2. Given a note, find `n` most related books from a small subset of `douban book database`
+
+#### Similar Notes
+
+ATTENTION! It's rather simple right now, just test the whole pipeline.
+
+For each note, now I generate 15 tags using `TextRank` method with their TF/IDF score and use it to represent the theme of the given note. Then I get a new tag database like this:
+
+![tagbase](./screenshots/tagbase.jpg)
+
+Note that the tags contain many so called `stop words`, I'll filtering them out later.
+
+Now I just use inner product to calculate the similarity of the tags. Later I'll use more advanced method to finish this task.
+
+![similarnote](./screenshots/similarnote.jpg)
+
+Now it works fine with a small set of notes. Most of the notes are related.
+
+#### Related Books
+
+Two databases are used now for book recommendations. One is tags from different users for different books. The other is information about different books.
+
+Here is some data from these two database:
+
+Sample book info
+
+    {"tags": [["冰与火之歌", 844], ["奇幻", 471], ["乔治·R.R.马丁", 357], ["小说", 231], ["史诗", 200], ["美国", 152], ["外国文学", 111], ["乔治·马丁", 107]], "id": 20381804, "context": "《冰与火之歌:魔龙的狂舞(13-15)(盒装本)(套装共3册)》故事紧接着卷三《冰雨的风暴》，并与卷四《群鸦的盛宴》中的故事同步进行。五王之战此时似乎已经结束。在北境，史坦尼斯•拜拉席恩国王已经在长城驻扎，并发誓要赢得北方人的支持以夺回铁王座。同时西海岸的大部分已被铁民占领。在长城上，琼恩•雪诺被选为第九百九十八任守夜人军团总司令，但是不管在长城内外，都有敌人在等待着他。提利昂•兰尼斯特乘船穿越狭海来到潘托斯，尽管连他自己也不知道他的最终目标是什么。丹妮莉丝•坦格利安征服了弥林，并决定留在那里统治这座城市，以磨练当她回到维斯特洛后所需要的领导才能。但是丹妮莉丝的出现已经在维斯特洛广为流传，从铁群岛到多恩，从旧镇到自由城邦，有不少人已经在试图寻找她并希望利用她达到自己的目的。海报： 赠品图：", "name": "冰与火之歌·卷五·魔龙的狂舞（全三册）"}
+
+It contains the following information:
+
++ tags: user-generated tags of the book
++ id: the id of the book in the database
++ context: short introduction of the book
++
 
 
 
+### Information retrieval
 
 
-## nomadic
+balbalblab
+
+## NOMADIC
 
 `nomadic` supports a simple directory structure of HTML, Markdown, txt, and pdf notes and any other files which may need to be referenced. `nomadic` provides an easier way of searching through and browsing those files through either the command line or a simple web interface.
 
@@ -196,6 +296,7 @@ You can specify a custom stylesheet to override the default one. In your config,
 ---
 
 ### Usage
+
 Run the `nomadic` daemon if it isn't running already.
 
 ```bash
@@ -223,6 +324,7 @@ Commands:
 ```
 
 #### Browsing notes
+
 You can browse this notes site by running:
 
 ```bash
@@ -234,7 +336,7 @@ which opens up the root directory ('notebook') in your default web browser.
 You can immediately jump to a specific notebook by passing its name in:
 
 ```bash
-$ nomadic browse economics
+$ nomadic browse programming
 ```
 
 If the specified name matches multiple notebooks, you'll be given the option to select the right one.
@@ -306,7 +408,7 @@ $ nosetests test
 
 ![code and mathjax galore](screenshots/06.png)
 
-## util
+## UTIL
 
 As I have lots of mobile devices that generate notes(e.g. kindle). I need to make sure that they can be merged in to `WKK` with ease.
 
