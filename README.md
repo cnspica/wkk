@@ -25,6 +25,8 @@ It can be regarded as an application that combines Evernote, RSS, Wikipedia toge
     - Similar Notes
     - Related Books
   - Information retrieval
+    - daily report content
+    - Sources(Increasing)
 - NOMADIC
   - Features
   - Setup
@@ -128,11 +130,9 @@ Now it works fine with a small set of notes. Most of the notes are related.
 
 #### Related Books
 
-Two databases are used now for book recommendations. One is tags from different users for different books. The other is information about different books.
+Two databases are used now for book recommendations. One is information about the books user tagged. The other is information about different books.Here is some data from these two database:
 
-Here is some data from these two database:
-
-Sample book info
+**Sample book info**
 
     {"tags": [["冰与火之歌", 844], ["奇幻", 471], ["乔治·R.R.马丁", 357], ["小说", 231], ["史诗", 200], ["美国", 152], ["外国文学", 111], ["乔治·马丁", 107]], "id": 20381804, "context": "《冰与火之歌:魔龙的狂舞(13-15)(盒装本)(套装共3册)》故事紧接着卷三《冰雨的风暴》，并与卷四《群鸦的盛宴》中的故事同步进行。五王之战此时似乎已经结束。在北境，史坦尼斯•拜拉席恩国王已经在长城驻扎，并发誓要赢得北方人的支持以夺回铁王座。同时西海岸的大部分已被铁民占领。在长城上，琼恩•雪诺被选为第九百九十八任守夜人军团总司令，但是不管在长城内外，都有敌人在等待着他。提利昂•兰尼斯特乘船穿越狭海来到潘托斯，尽管连他自己也不知道他的最终目标是什么。丹妮莉丝•坦格利安征服了弥林，并决定留在那里统治这座城市，以磨练当她回到维斯特洛后所需要的领导才能。但是丹妮莉丝的出现已经在维斯特洛广为流传，从铁群岛到多恩，从旧镇到自由城邦，有不少人已经在试图寻找她并希望利用她达到自己的目的。海报： 赠品图：", "name": "冰与火之歌·卷五·魔龙的狂舞（全三册）"}
 
@@ -141,14 +141,52 @@ It contains the following information:
 + tags: user-generated tags of the book
 + id: the id of the book in the database
 + context: short introduction of the book
-+
++ name: the name of the book
 
+**Sample user tag info**
 
+     {"count": 7, "start": 0, "total": 7, "id": "2805495", "tags": [{"count": 1, "title": "撒哈拉的故事"}, {"count": 1, "title": "被窝是青春的坟墓"}, {"count": 1, "title": "枕草子"}, {"count": 1, "title": "彼特·潘"}, {"count": 1, "title": "苏菲的世界"}, {"count": 1, "title": "大地之灯"}, {"count": 1, "title": "你好，忧愁"}]}
+
+It tells me that this user has given 7 tags for 7 different books. I can also know the title of the book.
+
+For now I use the tags from the book information as well as the tags generated from the short introduction of the book to represent the theme of the book. Just like this:
+
+![bookbase](./screenshots/bookbase.jpg)
+
+Then I can use the same method that used in finding similar notes to find similar books.
+
+![relatedbook](./screenshots/relatedbook.jpg)
+
+The result is not that good for now as I only use basic methods to find connections between notes and books. Later I'll use more advanced method to finish this task.
 
 ### Information retrieval
 
+yaha package
 
-balbalblab
+1. Find some part of important **sentences**. Cut passages to sentences.
+2. Fins some part of **important** sentences. How to decide which sentence is more important? (Position: Title, first/last sentence <title> <h1> <h2> <strong>; Content: word is important -> sentence is important, TF, Stopwords, N-Gram, Part-of-speech(n. v. is more important than adv. adj.), TF-IDF, LDA(theme words))
+3. Sort sentences with importance score and revert to the original order for better reading experiences. The number of sentences is uncertain.
+
+#### daily report content
+
++ Date
++ Weather
++ Location
++ Theme(user-specified, shocking news, notes related)
++ Summary
+
+Notes->tags->topic->news->daily report
+
+#### Sources(Increasing)
+
++ Wikipedia
++ Twitter(later)
++ Facebook(later)
++ Weibo
++ New book
++ Sports
+
+
 
 ## NOMADIC
 
