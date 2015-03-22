@@ -45,6 +45,9 @@ It can be regarded as an application that combines Evernote, RSS, Wikipedia toge
 - UTIL
   - Kindle Clippings Import
   - Evernote Import
+  - Format Cleaner
+  - Format Converter
+  - Push Service
 - Acknowledgements
 
 <!-- /MarkdownTOC -->
@@ -161,11 +164,21 @@ The result is not that good for now as I only use basic methods to find connecti
 
 ### Information retrieval
 
-yaha package
-
 1. Find some part of important **sentences**. Cut passages to sentences.
-2. Fins some part of **important** sentences. How to decide which sentence is more important? (Position: Title, first/last sentence <title> <h1> <h2> <strong>; Content: word is important -> sentence is important, TF, Stopwords, N-Gram, Part-of-speech(n. v. is more important than adv. adj.), TF-IDF, LDA(theme words))
+2. Fins some part of **important** sentences. How to decide which sentence is more important? (Position: Title, first/last sentence `<title> <h1> <h2> <strong>`; Content: word is important to sentence is important, TF, Stopwords, N-Gram, Part-of-speech(n. v. is more important than adv. adj.), TF-IDF, LDA(theme words))
 3. Sort sentences with importance score and revert to the original order for better reading experiences. The number of sentences is uncertain.
+
+This function is still in a very basic stage, for some material it works pretty well but for some specific passages, things get worse.
+
+Here is a sample, I use the news [here](http://www.bigertech.com/post/mr-fantasy/). This is a passage that introduce the history of one of the most famous Chinese singer, Jay Chou, and his music.
+
+Using my code I get the following summary:
+
+    离黄金年华还有几年, 周杰伦不仅赋予了这种舶来品风格以华语的新外壳, 节奏的吉他外加奇怪的中国风格音色, 节奏部分也不时的加入中国锣钵, 这也进一步证明了周杰伦展现给大众的才华只是他极少的一部分, 他能兼顾的角色如此之多并且还能同时拿到金曲奖, 作为歌手角色的周杰伦, 得住五个得力队友.
+
+The length of the passage is reduced from `7615` to `145` with some of the key topics(in my opinion).
+
+I'm still testing different algorithms to get better result.
 
 #### daily report content
 
@@ -175,7 +188,7 @@ yaha package
 + Theme(user-specified, shocking news, notes related)
 + Summary
 
-Notes->tags->topic->news->daily report
+Notes-tags-topic-news-daily report
 
 #### Sources(Increasing)
 
@@ -469,6 +482,17 @@ You need one more step to import notes from evernote:
 
 You need to make sure the root of the Notes folder is correct.
 
+### Format Cleaner
+
+Some of the notes imported from different places have several fixed but non-standard format identifier. This is a tool to unify them in a beautiful format and remove useless characters.
+
+### Format Converter
+
+The source of every note is `markdown`, which can be converted to different formats easily. `WKK` also provides a convinient tool to finish the job.
+
+### Push Service
+
+Amazon kindle provides us a service that I can push my personal document to my kindle devices. It's convinient for me to continue my reading and working or just use the notes as references. So `WKK` can help me send the notes I want to my kindle or other service provider(e.g. evernote, pocket, etc)
 
 ## Acknowledgements
 
