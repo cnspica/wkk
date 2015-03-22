@@ -16,39 +16,39 @@ It can be regarded as an application that combines Evernote, RSS, Wikipedia toge
 
 <!-- MarkdownTOC -->
 
-- [JARVIS][jarvis]
-    - [Natural Language Processing][natural language processing]
-        - [Tokenization][tokenization]
-        - [Tag Extraction][tag extraction]
-        - [Stats Analysis][stats analysis]
-    - [Recommendation system][recommendation system]
-        - [Similar Notes][similar notes]
-        - [Related Books][related books]
-    - [Information retrieval][information retrieval]
-        - [daily report content][daily report content]
-        - [Sources(Increasing)][sourcesincreasing]
-- [NOMADIC][nomadic]
-    - [Features][features]
-    - [Setup][setup]
-        - [Installation][installation]
-        - [Configuration][configuration]
-        - [The Daemon][the daemon]
-        - [Custom CSS][custom css]
-    - [Usage][usage]
-        - [Browsing notes][browsing notes]
-        - [Searching notes][searching notes]
-        - [Adding other files (images, etc)][adding other files images etc]
-        - [Presentations(TODO)][presentationstodo]
-        - [Tips][tips]
-    - [Development][development]
-    - [Screenshots][screenshots]
-- [UTIL][util]
-    - [Kindle Clippings Import][kindle clippings import]
-    - [Evernote Import][evernote import]
-    - [Format Cleaner][format cleaner]
-    - [Format Converter][format converter]
-    - [Push Service][push service]
-- [Acknowledgements][acknowledgements]
+- JARVIS
+    - Natural Language Processing
+        - Tokenization
+        - Tag Extraction
+        - Stats Analysis
+    - Recommendation system
+        - Similar Notes
+        - Related Books
+    - Information retrieval
+        - daily report content
+        - Sources(Increasing)
+- NOMADIC
+    - Features
+    - Setup
+        - Installation
+        - Configuration
+        - The Daemon
+        - Custom CSS
+    - Usage
+        - Browsing notes
+        - Searching notes
+        - Adding other files (images, etc)
+        - Presentations(TODO)
+        - Tips
+    - Development
+    - Screenshots
+- UTIL
+    - Kindle Clippings Import
+    - Evernote Import
+    - Format Cleaner
+    - Format Converter
+    - Push Service
+- Acknowledgements
 
 <!-- /MarkdownTOC -->
 
