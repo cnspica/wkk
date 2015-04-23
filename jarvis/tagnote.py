@@ -4,7 +4,7 @@ import os, sys, codecs, json, re
 import jieba
 import jieba.analyse
 
-noteroot = '../Notes/hero'
+noteroot = '../Notes'
 # this two sentence can solve Chinese Problem
 reload(sys)
 sys.setdefaultencoding('utf-8')
