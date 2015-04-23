@@ -3,3 +3,4 @@
 *.pyc
 jarvis/book
 jarvis/data
+jarvis/seg
