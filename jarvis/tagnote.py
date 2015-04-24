@@ -22,8 +22,10 @@ def noteproc():
         # TODO eliminate ![]() tag
         text = re.sub(r'\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d','', text)
         text = re.sub(r'\d\d\d\d-\d\d-\d\d','', text)
-        text = re.sub(r'![.*](.*)','',text)
-        text = re.sub(r'[.*](.*)','',text)
+        # clean markdown syntax
+        text = re.sub(r'!\[.*\]\(.*\)','',text)
+        text = re.sub(r'\(http.*\)','',text)
+        text = re.sub(r'#+','', text)
         # get top 10 tags with weights
         tags = jieba.analyse.extract_tags(text, topK=15, withWeight=True)
         # store to a list
