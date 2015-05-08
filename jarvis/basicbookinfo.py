@@ -3,7 +3,7 @@
 import os, sys, codecs, json, re
 from bookinfo import *
 
-bookroot = 'data/doubooktest/'
+bookroot = 'data/doubook/'
 
 books = os.listdir(bookroot)
 count = 0

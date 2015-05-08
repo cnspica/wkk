@@ -14,6 +14,7 @@ matchnotes = []
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+loglines = []
 
 def loadtagbase():
     tagfile = codecs.open(tburl, 'r')
@@ -21,6 +22,7 @@ def loadtagbase():
         tagbase.append(tagline[:-len('\n')].split(' '))
 
 def findsimilarity(note):
+    matchnotes = []
     h = codecs.open(note, 'r')
     text = h.read()
     tags = jieba.analyse.extract_tags(text, topK=30)
@@ -45,11 +47,30 @@ def findsimilarity(note):
         if ismatch == 1:
             matchnotes.append(tagline[0] + " " + matchtags)
 
-    print '[Original Notes]'
+    print 'Original Notes'
     print note
+    loglines.append('Original Notes: ' + note + '\n')
     print 'Similar Notes:'
+    loglines.append('Related Notes:' + '\n')
     for nt in matchnotes:
+        loglines.append(nt + '\n')
         print nt
+    loglines.append('-------------------')
 
 if __name__ == '__main__':
-    findsimilarity(testnote)
+    noteroot = '../Notes/'
+    notes = os.listdir(noteroot)
+    count = 0
+
+    for note in notes:
+        if note[0] == '.':
+            continue
+        print 'processing ' + note
+        findsimilarity(noteroot + note)
+
+    fh = codecs.open('./result/simnotes.txt', 'w', 'utf-8')
+    for line in loglines:
+        fh.write(line)
+
+    print 'done'
+
