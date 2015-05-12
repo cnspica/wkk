@@ -23,7 +23,7 @@ def loadbookbase():
         bookbase.append(bookline[:-len('\n')].split(' '))
 
 def findsimilarity(note):
-    matchbooks= []
+    matchbooks = []
     h = codecs.open(note, 'r')
     text = h.read()
     tags = jieba.analyse.extract_tags(text, topK=30)
@@ -44,6 +44,7 @@ def findsimilarity(note):
                     # if there is a tag same as the testnote's tag, we add it to the list
                     ismatch = 1
                     matchtags = matchtags + tag + " "
+                    break
         if ismatch == 1:
             matchbooks.append(bookline[0] + " " + matchtags)
 
@@ -58,6 +59,8 @@ def findsimilarity(note):
     loglines.append('-------------------')
 
 if __name__ == '__main__':
+
+
     noteroot = '../Notes/'
     notes = os.listdir(noteroot)
     count = 0

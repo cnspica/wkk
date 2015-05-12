@@ -44,6 +44,7 @@ def findsimilarity(note):
                     # if there is a tag same as the testnote's tag, we add it to the list
                     ismatch = 1
                     matchtags = matchtags + tag + " "
+                    break;
         if ismatch == 1:
             matchnotes.append(tagline[0] + " " + matchtags)
 
