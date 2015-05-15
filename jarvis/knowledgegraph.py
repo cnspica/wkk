@@ -1,7 +1,7 @@
 #coding=utf-8
 from entity import Entity
 import os, sys, codecs, json, re
-from igraph import *
+import networkx as nx
 
 entityList = [];
 
@@ -59,35 +59,53 @@ def testLoad():
     loadEntity(tier5filename)
 
 def testGraph():
-    g = Graph()
-    g.add_vertices(3)
-    # only valid edges can be added
-    g.add_edges([(0,1), (1,2), (2,0)])
-    g.add_vertices(3)
-    g.add_edges([(2,3),(3,4),(4,5),(5,3)])
-    print g
-    g.get_eid(2,3)
-    g.delete_edges(3)
-    summary(g)
-    g = Graph([(0,1), (0,2), (2,3), (3,4), (4,2), (2,5), (5,0), (6,3), (5,6)])
-    g.vs["name"] = ["Alice", "Bob", "Claire", "Dennis", "Esther", "Frank", "George"]
-    g.vs["age"] = [25, 31, 18, 47, 22, 23, 50]
-    g.vs["gender"] = ["f", "m", "f", "m", "f", "m", "m"]
-    g.es["is_formal"] = [False, False, True, True, True, False, True, False, False]
-    print g.degree()
-    print g.degree(type='in')
-    print 'betweenness: ', g.edge_betweenness()
-    print 'pagerank: ', g.pagerank()
-    # figure out which connections have the highest betweenness
-    ebs = g.edge_betweenness()
-    max_eb = max(ebs)
-    print [g.es[idx].tuple for idx, eb in enumerate(ebs) if eb == max_eb]
-    print g.vs[2].degree()
-    print 'select: ',g.vs.select(_degree = g.maxdegree())["name"]
-    # find specific node
-    claire = g.vs.find(name="Claire")
-    print type(claire)
-    print claire.index
+    G = nx.Graph()
+    # add one node at a time,
+    G.add_node(1)
+    # add a list of nodes,
+    G.add_nodes_from([2,3])
+    # G can also be grown by adding one edge at a time,
+    G.add_edge(1,2)
+    e=(2,3)
+    G.add_edge(*e)
+    # adding a list of edges,
+    G.add_edges_from([(1,2),(1,3)])
+    G.clear()
+    # There are no complaints when adding existing nodes or edges. For example, after removing all nodes and edges,
+    # we add new nodes/edges and NetworkX quietly ignores any that are already present.
+    G.add_edges_from([(1,2),(1,3)])
+    G.add_node(1)
+    G.add_edge(1,2)
+    G.add_node("spam")       # adds node "spam"
+    G.add_nodes_from("spam") # adds 4 nodes: 's', 'p', 'a', 'm'
+    print 'number of nodes: ', G.number_of_nodes()
+    print 'number of edges: ', G.number_of_edges()
+    print 'Nodes: ', G.nodes()
+    print 'Edges: ', G.edges()
+    print 'Neighbor 1: ', G.neighbors(1)
+    # Removing nodes or edges has similar syntax to adding:
+    G.remove_nodes_from("spam")
+    print 'Nodes: ', G.nodes()
+    G.remove_edge(1,3)
+    print 'Edges: ', G.edges()
+    #You can safely set the attributes of an edge using subscript notation if the edge already exists
+    G.add_edge(1,3)
+    G[1][3]['color']='blue'
+    # Fast examination of all edges is achieved using adjacency iterators. Note that for undirected graphs this actually looks at each edge twice.
+    FG=nx.Graph()
+    FG.add_weighted_edges_from([(1,2,0.125),(1,3,0.75),(2,4,1.2),(3,4,0.375)])
+    for n,nbrs in FG.adjacency_iter():
+       for nbr,eattr in nbrs.items():
+           data=eattr['weight']
+           if data<0.5: print('(%d, %d, %.3f)' % (n,nbr,data))
+
+    # Attributes such as weights, labels, colors, or whatever Python object you like, can be attached to graphs, nodes, or edges.
+    # Graph attributes
+    G = nx.Graph(day="Friday")
+    print G.graph
+    # you can modify attributes later
+    G.graph['day']='Monday'
+    print G.graph
 
 
 
