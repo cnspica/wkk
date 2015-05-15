@@ -5,6 +5,10 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 entityList = [];
+tier2filename = 'knowledge/2tier.txt'
+tier3filename = 'knowledge/3tier.txt'
+tier4filename = 'knowledge/4tier.txt'
+tier5filename = 'knowledge/5tier.txt'
 
 def loadEntity(filename):
     entityfile = codecs.open(filename, 'r')
@@ -28,9 +32,6 @@ def loadEntity(filename):
             tmpindex = 1
             entityList.append(createEntity(namestr, parentstr, childstr))
 
-
-
-
 def createEntity(namestr, parentstr, childstr):
     name = namestr.split(' ')
     parent = parentstr.split(' ')
@@ -42,11 +43,6 @@ def createEntity(namestr, parentstr, childstr):
 
 
 def testLoad():
-    tier2filename = 'knowledge/2tier.txt'
-    tier3filename = 'knowledge/3tier.txt'
-    tier4filename = 'knowledge/4tier.txt'
-    tier5filename = 'knowledge/5tier.txt'
-
     print 'loading tier2 data'
     loadEntity(tier2filename)
 
@@ -143,8 +139,91 @@ def testGraph():
     # plt.show()
     # plt.savefig("path.png")
 
+def draw_tier2():
+    print 'loading tier2 data'
+    loadEntity(tier2filename)
+    print 'entity size: ', len(entityList)
 
+    G = nx.Graph()
+    G.add_node(u'总分类')
+    for entity in entityList:
+        name = entity.name[0].decode('utf8')
+        print name
+        G.add_node(name)
+        G.add_edge(u'总分类',name)
+        for child in entity.child:
+            cn = child.decode('utf8')
+            G.add_node(cn)
+            G.add_edge(name, cn)
 
+    pos=nx.spring_layout(G) # positions for all nodes
+    nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
+    # labels
+    nx.draw_networkx_labels(G,pos,font_size=15,font_family='sans-serif')
+    plt.axis('off')
+    plt.show()
+
+def draw_tier3():
+    print 'loading tier3 data'
+    loadEntity(tier3filename)
+    print 'entity size: ', len(entityList)
+
+    G = nx.Graph()
+    for entity in entityList:
+        name = entity.name[0].decode('utf8')
+        print name
+        G.add_node(name)
+
+        for parent in entity.parent:
+            pr = parent.decode('utf8')
+            G.add_node(pr)
+            G.add_edge(pr, name)
+
+        for child in entity.child:
+            cn = child.decode('utf8')
+            G.add_node(cn)
+            G.add_edge(name, cn)
+
+    pos=nx.spring_layout(G) # positions for all nodes
+    nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
+    # labels
+    nx.draw_networkx_labels(G,pos,font_size=10,font_family='sans-serif')
+    plt.axis('off')
+    plt.show()
+
+def draw_tier123():
+    print 'loading tier2 data'
+    loadEntity(tier2filename)
+    print 'loading tier3 data'
+    loadEntity(tier3filename)
+    print 'entity size: ', len(entityList)
+
+    G = nx.Graph()
+    for entity in entityList:
+        name = entity.name[0].decode('utf8')
+        print name
+        G.add_node(name)
+
+        for parent in entity.parent:
+            pr = parent.decode('utf8')
+            G.add_node(pr)
+            G.add_edge(pr, name)
+
+        for child in entity.child:
+            cn = child.decode('utf8')
+            G.add_node(cn)
+            G.add_edge(name, cn)
+
+    pos=nx.spring_layout(G) # positions for all nodes
+    nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
+    # labels
+    # nx.draw_networkx_labels(G,pos,font_size=10,font_family='sans-serif')
+    # nodes
+    nx.draw_networkx_nodes(G,pos,node_size=10)
+
+    plt.axis('off')
+    plt.show()
 
 if __name__ == '__main__':
-    testGraph()
+    draw_tier123()
+
