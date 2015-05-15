@@ -2,6 +2,7 @@
 from entity import Entity
 import os, sys, codecs, json, re
 import networkx as nx
+import matplotlib.pyplot as plt
 
 entityList = [];
 
@@ -106,6 +107,42 @@ def testGraph():
     # you can modify attributes later
     G.graph['day']='Monday'
     print G.graph
+
+    # Node attributes
+    # Add node attributes using add_node(), add_nodes_from() or G.node
+    G.add_node(1, time='5pm')
+    G.add_nodes_from([3], time='2pm')
+    print G.node[1]
+    G.node[1]['room'] = 714
+    print G.nodes(data=True)
+
+    # Edge Attributes
+    # Add edge attributes using add_edge(), add_edges_from(), subscript notation, or G.edge.
+    G.add_edge(1, 2, weight=4.7 )
+    G.add_edges_from([(3,4),(4,5)], color='red')
+    G.add_edges_from([(1,2,{'color':'blue'}), (2,3,{'weight':8})])
+    G[1][2]['weight'] = 4.7
+    G.edge[1][2]['weight'] = 4
+    print G.edges(data=True)
+
+    # Directed graphs
+    # The DiGraph class provides additional methods specific to directed edges, e.g. DiGraph.out_edges(), DiGraph.in_degree(), DiGraph.predecessors(), DiGraph.successors() etc.
+    DG=nx.DiGraph()
+    DG.add_weighted_edges_from([(1,2,0.5), (3,1,0.75)])
+    print DG.out_degree(1,weight='weight')
+    print DG.degree(1,weight='weight')
+    print DG.successors(1)
+    print DG.neighbors(1)
+
+    # Drawing graphs
+    # nx.draw(G)
+    # nx.draw_random(G)
+    # nx.draw_circular(G)
+    # nx.draw_spectral(G)
+    # nx.draw_networkx_labels(G, (1, 2, 3, 4, 5))
+    # plt.show()
+    # plt.savefig("path.png")
+
 
 
 
