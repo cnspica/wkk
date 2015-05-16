@@ -139,6 +139,7 @@ def testGraph():
     # plt.show()
     # plt.savefig("path.png")
 
+# draw tier 2 test
 def draw_tier2():
     print 'loading tier2 data'
     loadEntity(tier2filename)
@@ -163,6 +164,7 @@ def draw_tier2():
     plt.axis('off')
     plt.show()
 
+# draw tier 3 test
 def draw_tier3():
     print 'loading tier3 data'
     loadEntity(tier3filename)

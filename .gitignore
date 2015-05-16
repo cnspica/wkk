@@ -2,7 +2,3 @@
 .searchindex
 *.pyc
 jarvis/book
-jarvis/data
-jarvis/seg
-
-jarvis/seg/tags.txt
