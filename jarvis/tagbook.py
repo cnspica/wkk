@@ -13,16 +13,16 @@ def bookproc():
     for book in bookinfos:
         target = json.JSONDecoder().decode(book)
         tags = jieba.analyse.extract_tags(target['context'], topK=10, withWeight=True)
-        output = '[' + target['name'] + ']'
+        output = target['name']
         print target['name'],
 
         for t in target['tags']:
             print ' ' + t[0],
-            output = output + u' ' + t[0]
+            output = output + u'*' + t[0]
 
         for t in tags:
             print ' ' + t[0],
-            output = output + u' ' + t[0]
+            output = output + u'*' + t[0]
 
         print ''
         booklist.append(output + '\n')
