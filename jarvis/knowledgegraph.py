@@ -219,9 +219,10 @@ def draw_tier123():
     pos=nx.spring_layout(G) # positions for all nodes
     nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
     # labels
-    # nx.draw_networkx_labels(G,pos,font_size=10,font_family='sans-serif')
+    nx.draw_networkx_labels(G,pos,font_size=10,font_family='sans-serif')
+
     # nodes
-    nx.draw_networkx_nodes(G,pos,node_size=10)
+    # nx.draw_networkx_nodes(G,pos,node_size=10)
 
     plt.axis('off')
     plt.show()

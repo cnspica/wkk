@@ -4,9 +4,12 @@ import os, sys, codecs, json, re
 import jieba
 import jieba.analyse
 import stopwordsfilter
+from math import sqrt
 
 noteroot = '../Notes'
 testnote = '../Notes/china-and-world.md'
+testnote1 = '../Notes/love-barefoot-philosophy.md'
+testnote2 = '../Notes/old-wisdom-modern-love.md'
 tburl = './seg/tags.txt'
 tagbase = []
 matchnotes = []
@@ -58,7 +61,54 @@ def findsimilarity(note):
         print nt
     loglines.append('-------------------')
 
-if __name__ == '__main__':
+def checksim(filename,filename2):
+    file_words = {}
+    ignore_list = [u'的',u'了',u'和',u'呢',u'啊',u'哦',u'恩',u'嗯',u'吧'];
+    accepted_chars = re.compile(ur"[\\u4E00-\\u9FA5]+")
+
+    file_object = open(filename)
+
+    try:
+        all_the_text = file_object.read()
+        seg_list = jieba.cut(all_the_text, cut_all=True)
+        #print "/ ".join(seg_list)
+        for s in seg_list:
+            if accepted_chars.match(s) and s not in ignore_list:
+                if s not in file_words.keys():
+                    file_words[s] = [1,0]
+                else:
+                    file_words[s][0] += 1
+    finally:
+        file_object.close()
+
+    file_object2 = open(filename2)
+
+    try:
+        all_the_text = file_object2.read()
+        seg_list = jieba.cut(all_the_text, cut_all=True)
+        for s in seg_list:
+            if accepted_chars.match(s) and s not in ignore_list:
+                if s not in file_words.keys():
+                    file_words[s] = [0,1]
+                else:
+                    file_words[s][1] += 1
+    finally:
+        file_object2.close()
+
+    sum_2 = 0
+    sum_file1 = 0
+    sum_file2 = 0
+    for word in file_words.values():
+        sum_2 += word[0]*word[1]
+        sum_file1 += word[0]**2
+        sum_file2 += word[1]**2
+
+    rate = sum_2/(sqrt(sum_file1*sum_file2))
+    print '[',filename,']vs[',filename2,'] rate: ', rate
+    return rate
+
+
+def naivesimallnote():
     noteroot = '../Notes/'
     notes = os.listdir(noteroot)
     count = 0
@@ -75,3 +125,8 @@ if __name__ == '__main__':
 
     print 'done'
 
+
+if __name__ == '__main__':
+    checksim(testnote, testnote1)
+    checksim(testnote1, testnote2)
+    checksim(testnote, testnote2)
