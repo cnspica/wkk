@@ -3,6 +3,15 @@ import os, sys, codecs, json, re
 
 # train model for the specific count
 
+'''
+生成倒排索引的流程：
+笔记 -> label -> tag -> 倒排索引 -> 给每个 tag 标记好所属的 label(即为类别)
+
+预测时的流程
+笔记 -> tag -> 倒排索引 -> 统计不同 label 的次数 -> 做出预测
+
+'''
+
 traindata = []
 testdata = []
 noteroot = '../Notes'
