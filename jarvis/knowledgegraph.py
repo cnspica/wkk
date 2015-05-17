@@ -4,7 +4,10 @@ import os, sys, codecs, json, re
 import networkx as nx
 import matplotlib.pyplot as plt
 
-entityList = [];
+entityList = []
+tier2list = []
+tier3list = []
+tier4list = []
 tier2filename = 'knowledge/2tier.txt'
 tier3filename = 'knowledge/3tier.txt'
 tier4filename = 'knowledge/4tier.txt'
@@ -30,7 +33,8 @@ def loadEntity(filename):
 
         if entityline[:5] == '#####':
             tmpindex = 1
-            entityList.append(createEntity(namestr, parentstr, childstr))
+            entity =createEntity(namestr, parentstr, childstr)
+            entityList.append(entity)
 
 def createEntity(namestr, parentstr, childstr):
     name = namestr.split(' ')
@@ -196,16 +200,18 @@ def draw_tier3():
 def draw_tier123():
     print 'loading tier2 data'
     loadEntity(tier2filename)
+    tier2num = len(entityList)
     print 'loading tier3 data'
     loadEntity(tier3filename)
+    tier3num = len(entityList)
     print 'entity size: ', len(entityList)
 
     G = nx.Graph()
+    G.add_node(u'总分类')
     for entity in entityList:
         name = entity.name[0].decode('utf8')
         print name
         G.add_node(name)
-
         for parent in entity.parent:
             pr = parent.decode('utf8')
             G.add_node(pr)
@@ -219,10 +225,15 @@ def draw_tier123():
     pos=nx.spring_layout(G) # positions for all nodes
     nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
     # labels
-    nx.draw_networkx_labels(G,pos,font_size=10,font_family='sans-serif')
+    # nx.draw_networkx_labels(G,pos,font_size=10,font_family='sans-serif')
 
     # nodes
-    # nx.draw_networkx_nodes(G,pos,node_size=10)
+    nx.draw_networkx_nodes(G,pos,node_size=15,node_color='r',alpha=0.4)
+    nx.draw_networkx_nodes(G,pos,nodelist=[u'总分类'],node_size=800,node_color='r')
+    nx.draw_networkx_nodes(G,pos,nodelist=[u'技术',u'地理',u'总类',u'科学',u'历史',u'社会'],node_size=400, node_color='b')
+    nx.draw_networkx_nodes(G,pos,nodelist=[u'人物',u'社会科学',u'宗教',u'文化',u'休闲',u'生活',u'自然',u'科技',u'自然科学'],node_size=200,node_color='g')
+
+
 
     plt.axis('off')
     plt.show()
