@@ -30,7 +30,7 @@ def noteproc():
         # get top 15 tags with weights
         tags = jieba.analyse.extract_tags(text, topK=30, withWeight=False)
         # store to a list
-        output = '[' + f + ']'
+        output = f
         print f,
 
         tags = stopwordsfilter.stopwordsfilter(tags)
