@@ -5,12 +5,14 @@ import jieba
 import jieba.analyse
 import stopwordsfilter
 from math import sqrt
+import trainmodel
 
-noteroot = '../Notes'
+noteroot = '../Notes/'
 testnote = '../Notes/china-and-world.md'
 testnote1 = '../Notes/love-barefoot-philosophy.md'
 testnote2 = '../Notes/old-wisdom-modern-love.md'
 tburl = './seg/tags.txt'
+lburl = './data/labelnote.txt'
 tagbase = []
 matchnotes = []
 # this two sentence can solve Chinese Problem
@@ -18,6 +20,29 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 loglines = []
+
+labeldict = {}
+
+# 类别作为 key，值为笔记列表
+def loadlabeldic():
+    print 'loading label database'
+    labelfile = codecs.open(lburl, 'r', 'utf8')
+    for labelline in labelfile:
+        arr = labelline[:-len('\n')].split(' ')
+        if labeldict.has_key(arr[1]):
+            labeldict[arr[1]].append(arr[0])
+        else:
+            labeldict[arr[1]] = [arr[0]]
+    print 'successfully loaded the labels of the notes'
+    # printlabeldict()
+
+
+def printlabeldict():
+    for key in labeldict:
+        print '[' + key + ']',
+        for label in labeldict[key]:
+            print label,
+        print ''
 
 def loadtagbase():
     tagfile = codecs.open(tburl, 'r')
@@ -103,10 +128,9 @@ def checksim(filename,filename2):
         sum_file1 += word[0]**2
         sum_file2 += word[1]**2
 
-    rate = sum_2/(sqrt(sum_file1*sum_file2))
-    print '[',filename,']vs[',filename2,'] rate: ', rate
+    rate = sum_2/(sqrt(sum_file1*sum_file2+1))
+    # print '[',filename,']vs[',filename2,'] rate: ', rate
     return rate
-
 
 def naivesimallnote():
     noteroot = '../Notes/'
@@ -125,8 +149,36 @@ def naivesimallnote():
 
     print 'done'
 
+# 这里这个 note 是包含 name 和 tag 的 list
+def kgfindsim(note):
+    name = note[0]
+    print 'find similar note for', name
+    label = trainmodel.noteclassify(note)
+    print 'type:',label
+
+    notelist = []
+
+    for content in labeldict[label]:
+        notelist.append((content, checksim(noteroot+name, noteroot+content)))
+
+    #L.sort(lambda x,y:cmp(x[1],y[1]))
+    notelist.sort(lambda x, y:-cmp(x[1],y[1]))
+    print '--------------'
+    print 'origin note:', name
+    print '--------------'
+    print 'similar note:'
+    count = 0
+    for n in notelist:
+        if count < 5:
+            print n[0],n[1]
+        else:
+            break
+        count = count + 1
 
 if __name__ == '__main__':
-    checksim(testnote, testnote1)
-    checksim(testnote1, testnote2)
-    checksim(testnote, testnote2)
+    # checksim(testnote, testnote1)
+    loadlabeldic()
+    loadtagbase()
+    # 随意测试
+    note = tagbase[3]
+    kgfindsim(note)

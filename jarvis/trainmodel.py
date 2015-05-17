@@ -22,7 +22,8 @@ invindex = {}
 
 types = [u'技术',u'地理',u'总类',u'科学',u'历史',u'社会',u'人物',u'社会科学',u'宗教',u'文化',u'休闲',u'生活',u'自然',u'科技',u'自然科学']
 
-trainsetsize = 180
+trainsetsize = 100
+modelsize = 200
 
 
 def splitdata(count):
@@ -91,11 +92,42 @@ def testresult():
     correct = 0
 
     for record in testdata:
-        correct = correct + noteclassify(record)
+        correct = correct + testnoteclassify(record)
 
     print 'precision rate:', correct,'/',len(testdata)
 
+
 def noteclassify(note):
+    splitdata(modelsize)
+    loadlabel()
+    # build inverted index with dictionary and list
+    buildinvertedindex()
+    name = note[0]
+    print 'name:', name
+    typedic = {}
+    for tag in note:
+        if tag == name:
+            continue
+        if invindex.has_key(tag):
+            label = invindex[tag]
+            for t in label:
+                if typedic.has_key(t):
+                    typedic[t] = typedic[t] + 1
+                else:
+                    typedic[t] = 1
+    # correct label
+    truelabel = labeldict[name]
+    # predict label
+    prelabel = ''
+    precount = 0
+    for key in typedic:
+        if typedic[key] > precount:
+            precount = typedic[key]
+            prelabel = key
+
+    return prelabel
+
+def testnoteclassify(note):
     name = note[0]
     print 'name:', name
     typedic = {}
