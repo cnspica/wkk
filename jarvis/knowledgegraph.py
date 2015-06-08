@@ -233,10 +233,12 @@ def draw_tier123():
     nx.draw_networkx_nodes(G,pos,nodelist=[u'技术',u'地理',u'总类',u'科学',u'历史',u'社会'],node_size=400, node_color='b')
     nx.draw_networkx_nodes(G,pos,nodelist=[u'人物',u'社会科学',u'宗教',u'文化',u'休闲',u'生活',u'自然',u'科技',u'自然科学'],node_size=200,node_color='g')
 
-    plt.axis('off')
-    plt.savefig("knowledge_graph.png",dpi=200)
+    #plt.axis('off')
+    #plt.savefig("knowledge_graph.png",dpi=200)
 
-    plt.show()
+    #plt.show()
+    print 'number of nodes: ', G.number_of_nodes()
+    print 'number of edges: ', G.number_of_edges()
 
 if __name__ == '__main__':
     draw_tier123()
